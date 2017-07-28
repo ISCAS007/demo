@@ -10,6 +10,7 @@ from utils import get_labels
 import os,sys
 import imageio
 import image_plot
+import matplotlib.pyplot as plt
 
 # config
 gnu_code_path = '/home/yzbx/git/gnu/face_classification'
@@ -189,6 +190,7 @@ class FaceClassification:
         print('destroy all windows')
 
     def emotion_visulization(self,video_path):
+        plt.ion()
         myplt=image_plot.Image_Plot()
         cap = cv2.VideoCapture(video_path)
         if not cap.isOpened():
@@ -196,6 +198,8 @@ class FaceClassification:
             sys.exit(-1)
 
         frameNum = 0
+
+        all_emotions=[]
         while True:
             ret, frame = cap.read()
             if not ret:
@@ -207,14 +211,14 @@ class FaceClassification:
                     break
 
             out_frame, emotions = self.process_image(frame,showImage=False)
-
+            all_emotions.append(emotions)
             if frameNum == 0:
                 filename, suffix = os.path.splitext(video_path)
                 out_video_path = filename + "_" + self.fd.srccode + ".avi"
                 out = imageio.get_writer(out_video_path, fps=30)
 
             write_frame = cv2.cvtColor(out_frame, cv2.COLOR_BGR2RGB)
-            myplt.emotion_plot(write_frame,emotions)
+            myplt.emotion_plot(write_frame,all_emotions)
 
             out.append_data(write_frame)
             frameNum += 1

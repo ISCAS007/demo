@@ -30,7 +30,7 @@ class Image_Plot:
 
         plt.show()
 
-    def emotion_plot(self,image,emotions):
+    def emotion_plot(self,image,emotions,showPlot=True):
         emotions_int=[]
         for emotion in emotions:
             for i in self.emotions_dict.keys():
@@ -53,7 +53,8 @@ class Image_Plot:
         plt.yticks(np.arange(len(yticks)),yticks)
         plt.plot(emotions_int)
 
-        plt.show()
+        if showPlot:
+            plt.show()
 
 if __name__ == '__main__':
     testplot=Image_Plot()
