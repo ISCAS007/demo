@@ -9,6 +9,7 @@ from utils import preprocess_input
 from utils import get_labels
 import os,sys
 import imageio
+import image_plot
 
 # config
 gnu_code_path = '/home/yzbx/git/gnu/face_classification'
@@ -56,7 +57,7 @@ class FaceClassification:
         self.emotion_classifier = load_model(emotion_model_path)
         self.gender_classifier = load_model(gender_model_path)
 
-    def process_image(self,image_path,waitTime=0):
+    def process_image(self,image_path,waitTime=0,showImage=True):
         #print('before loop')
         emotion_labels = get_labels('fer2013')
         gender_labels = get_labels('imdb')
@@ -75,7 +76,8 @@ class FaceClassification:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = self.fd.process(frame)
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        
+
+        emotions=[]
         #print('start loop')
         for (x,y,w,h) in faces:
             face = frame[(y - y_offset):(y + h + y_offset),
@@ -118,13 +120,16 @@ class FaceClassification:
                             0.5, gender_color, 2, cv2.LINE_AA)
             #print('x,y,w,h,emotion,gender',x,y,w,h,emotion,gender)
             print(emotion,gender)
+            emotions.append(emotion)
                      
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         # cv2.imwrite('predicted_test_image.png', frame)
-        cv2.imshow('predicted test image',frame)
-        cv2.waitKey(waitTime)
+
+        if showImage:
+            cv2.imshow('predicted test image',frame)
+            cv2.waitKey(waitTime)
         
-        return frame
+        return frame,emotions
 
     def process_video(self,video_path):
         cap=cv2.VideoCapture(video_path)
@@ -147,7 +152,7 @@ class FaceClassification:
                     print('video %s process finished'%video_path)
                     break
             #print('start process image')
-            out_frame=self.process_image(frame,waitTime=30)
+            out_frame,_=self.process_image(frame,waitTime=30)
             
             #print('out_frame.size is',out_frame.shape)
             if frameNum==0:
@@ -183,6 +188,51 @@ class FaceClassification:
         cv2.destroyAllWindows()
         print('destroy all windows')
 
+    def emotion_visulization(self,video_path):
+        myplt=image_plot.Image_Plot()
+        cap = cv2.VideoCapture(video_path)
+        if not cap.isOpened():
+            print('cannot open video %s' % video_path)
+            sys.exit(-1)
+
+        frameNum = 0
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                if frameNum == 0:
+                    print('cannot read video %s (but open okay!!!)' % video_path)
+                    sys.exit(-1)
+                else:
+                    print('video %s process finished' % video_path)
+                    break
+
+            out_frame, emotions = self.process_image(frame,showImage=False)
+
+            if frameNum == 0:
+                filename, suffix = os.path.splitext(video_path)
+                out_video_path = filename + "_" + self.fd.srccode + ".avi"
+                out = imageio.get_writer(out_video_path, fps=30)
+
+            write_frame = cv2.cvtColor(out_frame, cv2.COLOR_BGR2RGB)
+            myplt.emotion_plot(write_frame,emotions)
+
+            out.append_data(write_frame)
+            frameNum += 1
+
+            if frameNum > 100:
+                # break
+                pass
+
+            print(frameNum)
+        # Release everything if job is finished
+        print('start release')
+        cap.release()
+        print('release video capture')
+        out.close()
+        print('close video write')
+        cv2.destroyAllWindows()
+        print('destroy all windows')
+
 if __name__ == '__main__':
     image_path = os.path.join(gnu_code_path, 'images/test_image.jpg')
 
@@ -198,6 +248,7 @@ if __name__ == '__main__':
         if input.endswith(image_suffix):
             fc.process_image(input)
         else:
-            fc.process_video(input)
+            #fc.process_video(input)
+            fc.emotion_visulization(input)
     else:
         fc.process_image(image_path=image_path)
