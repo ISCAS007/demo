@@ -60,11 +60,13 @@ class Image_Plot:
             plt.ylabel('emotion')
             yticks=list(self.emotions_dict.values())
             plt.yticks(np.arange(len(yticks)),yticks)
+            plt.ylim(ymin=0, ymax=len(self.emotions_dict))
             self.plotfig,=plt.plot(range(len(emotions_int)),emotions_int)
         else:
             plt.subplot(1, 2, 2)
             self.plotfig.set_data(range(len(emotions_int)),emotions_int)
             plt.xlim(xmax=len(emotions_int))
+            plt.ylim(ymin=0, ymax=len(self.emotions_dict))
             plt.draw()
 
         if showPlot:
