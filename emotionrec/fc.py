@@ -116,9 +116,9 @@ class FaceClassification:
 
             cv2.rectangle(frame, (x, y), (x + w, y + h), gender_color, 3)
             cv2.putText(frame, emotion, (x, y - 30), font,
-                            fontScale=0.5, color=gender_color, thinkness=2, lineType=cv2.LINE_AA)
+                            fontScale=0.5, color=gender_color, thickness=2, lineType=cv2.LINE_AA)
             cv2.putText(frame, gender, (x , y - 30 + 15), font,
-                            fontScale=0.5, color=gender_color, thinkness=2, lineType=cv2.LINE_AA)
+                            fontScale=0.5, color=gender_color, thickness=2, lineType=cv2.LINE_AA)
             #print('x,y,w,h,emotion,gender',x,y,w,h,emotion,gender)
             print(emotion,gender)
             emotions.append(emotion)
