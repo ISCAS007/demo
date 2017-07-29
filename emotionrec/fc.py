@@ -218,7 +218,7 @@ class FaceClassification:
                 out = imageio.get_writer(out_video_path, fps=30)
 
             write_frame = cv2.cvtColor(out_frame, cv2.COLOR_BGR2RGB)
-            myplt.emotion_plot(write_frame,all_emotions)
+            myplt.emotion_plot(write_frame,all_emotions,showPlot=False)
 
             out.append_data(write_frame)
             frameNum += 1

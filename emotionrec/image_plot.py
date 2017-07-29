@@ -2,11 +2,15 @@
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
+import random
 
 class Image_Plot:
     def __init__(self):
         self.emotions_dict={0:'angry',1:'disgust',2:'fear',3:'happy',
                     4:'sad',5:'surprise',6:'neutral'}
+
+        self.imagefig=None
+        self.plotfig=None
 
     def test(self):
         # Simple data to display in various forms
@@ -40,24 +44,55 @@ class Image_Plot:
             else:
                 print('unknow emotion: ',emotion)
 
-        plt.subplot(1,2,1)
-        plt.imshow(image)
-        plt.title('image')
-        plt.xticks([])
-        plt.yticks([])
+        if self.imagefig is None:
+            plt.subplot(1,2,1)
+            plt.title('image')
+            plt.xticks([])
+            plt.yticks([])
+            self.imagefig=plt.imshow(image)
+        else:
+            plt.subplot(1, 2, 1)
+            self.imagefig.set_data(image)
 
-        plt.subplot(1,2,2)
-        plt.xlabel('frame number')
-        plt.ylabel('emotion')
-        yticks=list(self.emotions_dict.values())
-        plt.yticks(np.arange(len(yticks)),yticks)
-        plt.plot(emotions_int)
+        if self.plotfig is None:
+            plt.subplot(1,2,2)
+            plt.xlabel('frame number')
+            plt.ylabel('emotion')
+            yticks=list(self.emotions_dict.values())
+            plt.yticks(np.arange(len(yticks)),yticks)
+            self.plotfig,=plt.plot(range(len(emotions_int)),emotions_int)
+        else:
+            plt.subplot(1, 2, 2)
+            self.plotfig.set_data(range(len(emotions_int)),emotions_int)
+            plt.xlim(xmax=len(emotions_int))
+            plt.draw()
 
         if showPlot:
             plt.show()
+        else:
+            plt.pause(0.5)
 
 if __name__ == '__main__':
+    plt.ion()
+
     testplot=Image_Plot()
     image=mpimg.imread('/home/yzbx/Pictures/yolo.png')
     emotions=['angry','angry','disgust','sad']
-    testplot.emotion_plot(image,emotions)
+    testplot.emotion_plot(image,emotions,False)
+
+    images=[]
+    images.append(image)
+    image=mpimg.imread('/home/yzbx/Pictures/step1.png')
+    images.append(image)
+    image = mpimg.imread('/home/yzbx/Pictures/step2.png')
+    images.append(image)
+    image = mpimg.imread('/home/yzbx/Pictures/step3.png')
+    images.append(image)
+    image = mpimg.imread('/home/yzbx/Pictures/step4.png')
+    images.append(image)
+    for i in range(100):
+        emotion=testplot.emotions_dict[random.randint(0,6)]
+        emotions.append(emotion)
+        print('emotions len',len(emotions))
+        image=images[random.randint(0,len(images)-1)]
+        testplot.emotion_plot(image,emotions,False)
