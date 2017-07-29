@@ -46,14 +46,20 @@ class Image_Plot:
 
         if self.imagefig is None:
             plt.subplot(1,2,1)
-            title=('unknown',emotions[-1])[len(emotions)>0]
+            if len(emotions) > 0:
+                title=emotions[-1]
+            else:
+                title='unknown'
             plt.title('emotion is %s'%title)
             plt.xticks([])
             plt.yticks([])
             self.imagefig=plt.imshow(image)
         else:
             plt.subplot(1, 2, 1)
-            title = ('unknown', emotions[-1])[len(emotions) > 0]
+            if len(emotions) > 0:
+                title=emotions[-1]
+            else:
+                title='unknown'
             plt.title('emotion is %s' % title)
             self.imagefig.set_data(image)
 
