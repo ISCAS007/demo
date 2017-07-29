@@ -211,7 +211,7 @@ class FaceClassification:
                     break
 
             out_frame, emotions = self.process_image(frame,showImage=False)
-            all_emotions.append(emotions)
+            all_emotions.extend(emotions)
             if frameNum == 0:
                 filename, suffix = os.path.splitext(video_path)
                 out_video_path = filename + "_" + self.fd.srccode + ".avi"

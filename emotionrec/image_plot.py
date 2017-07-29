@@ -74,7 +74,7 @@ class Image_Plot:
 
 if __name__ == '__main__':
     plt.ion()
-
+    #plt.figure(num=1,figsize=(600,400))
     testplot=Image_Plot()
     image=mpimg.imread('/home/yzbx/Pictures/yolo.png')
     emotions=['angry','angry','disgust','sad']
