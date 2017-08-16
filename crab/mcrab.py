@@ -26,7 +26,7 @@ _3c_options = {
 print("usage: python3 crab.py [appName] [input dir] [output dir]")
 print("appName: crab, crab_carapace, snail, 3c")
 
-appName='3c'
+appName='crab'
 input_dir='/media/sdb/ISCAS_Dataset/crab/river-crab-test'
 output_dir=os.path.join(input_dir,'output')
 
@@ -42,6 +42,7 @@ elif appName.find('carapace')!=-1:
 elif appName=='snail':
     os.system('echo snail > labels.txt')
     options=snail_options
+    input_dir='/media/sdb/ISCAS_Dataset/crab/2017-6-19-snail/JPEGImages'
 elif appName=='3c':
     os.system('echo crab > labels.txt')
     os.system('echo "river crab carapace" >> labels.txt')
@@ -60,10 +61,12 @@ if len(sys.argv) > 3:
 tfnet = TFNet(options)
 print('options is ',options)
 
+number=0
 img_suffix=('jpg','JPG','JPEG','jpeg','bmp','BMP','png','PNG')
 for f in os.listdir(input_dir):
     print('file is',f)
     imgName=os.path.join(input_dir,f)
+   
     if os.path.isfile(imgName) and imgName.endswith(img_suffix):
         imgcv = cv2.imread(imgName)
         imgcv=cv2.resize(imgcv,(640,480))
@@ -93,4 +96,9 @@ for f in os.listdir(input_dir):
         cv2.imwrite(outname,imgcv)
         
         cv2.waitKey(0)
+        
+        if number>10:
+            break
+        else:
+            number=number+1
 
