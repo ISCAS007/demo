@@ -86,7 +86,7 @@ class FaceClassification:
 
             gray_face = gray[(y - y_offset_emotion):(y + h + y_offset_emotion),
                             (x - x_offset_emotion):(x + w + x_offset_emotion)]
-                            
+
             if 0 in face.shape or 0 in gray_face.shape:
                 continue
             try:
@@ -122,14 +122,14 @@ class FaceClassification:
             #print('x,y,w,h,emotion,gender',x,y,w,h,emotion,gender)
             print(emotion,gender)
             emotions.append(emotion)
-                     
+
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         # cv2.imwrite('predicted_test_image.png', frame)
 
         if showImage:
             cv2.imshow('predicted test image',frame)
             cv2.waitKey(waitTime)
-        
+
         return frame,emotions
 
     def process_video(self,video_path):
@@ -137,7 +137,7 @@ class FaceClassification:
         if not cap.isOpened():
             print('cannot open video %s'%video_path)
             sys.exit(-1)
-        
+
         # Define the codec and create VideoWriter object
         # DIVX, XVID, MJPG, X264, WMV1, WMV2
         # uppercase or lowercase ???
@@ -154,28 +154,28 @@ class FaceClassification:
                     break
             #print('start process image')
             out_frame,_=self.process_image(frame,waitTime=30)
-            
+
             #print('out_frame.size is',out_frame.shape)
             if frameNum==0:
                 #dirname=os.path.dirname(video_path)
                 #basename=os.path.basename(video_path)
-                #out_video_path=os.path.join(dirname,self.fd.srccode+"_"+basename)  
+                #out_video_path=os.path.join(dirname,self.fd.srccode+"_"+basename)
                 filename,suffix=os.path.splitext(video_path)
                 out_video_path=filename+"_"+self.fd.srccode+".avi"
                 # out = cv2.VideoWriter(out_video_path,fourcc, 20.0, out_frame.shape[0:2])
                 out=imageio.get_writer(out_video_path,fps=30)
-                
+
             #print('start write frame')
-            
+
             # out.write(out_frame)
             write_frame=cv2.cvtColor(out_frame,cv2.COLOR_BGR2RGB)
             out.append_data(write_frame)
             frameNum+=1
-            
+
             if frameNum > 100:
                 #break
                 pass
-                
+
         #if frameNum % 100 == 0:
             #print('frameNum is %d'%frameNum)
             print(frameNum)
@@ -252,7 +252,7 @@ if __name__ == '__main__':
         if input.endswith(image_suffix):
             fc.process_image(input)
         else:
-            #fc.process_video(input)
-            fc.emotion_visulization(input)
+            fc.process_video(input)
+            #fc.emotion_visulization(input)
     else:
         fc.process_image(image_path=image_path)
