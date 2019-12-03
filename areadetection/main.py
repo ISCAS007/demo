@@ -69,7 +69,12 @@ class Area_Detector():
         while True:
             ret,frame=cap.read()
             if ret:
-                image,bboxes=self.detector.process_slide(frame)
+                if self.config.slide_window:
+                    image,bboxes=self.detector.process_slide(frame)
+                else:
+                    image,bboxes=self.detector.process(frame)
+
+                bboxes=[bbox for bbox in bboxes if bbox['label']==self.config.label]
                 for bbox in bboxes:
                     flag,reason=isObjectInArea(rule,bbox)
                     if flag:
@@ -112,6 +117,7 @@ class Config(edict):
         self.conf=0.2
         self.bbox=[20,20,100,100]
         self.video_name='test.mp4'
+        self.slide_window=True
 
         self.get_parser()
 
@@ -125,6 +131,7 @@ class Config(edict):
         parser.add_argument('--label',default='car',choices=['car','person'],help='the class to detect')
         parser.add_argument('--conf',type=float,default=0.2,help='conf threshold for object')
         parser.add_argument('--bbox',type=int,nargs=4,default=[20,20,100,100],help='x1,y1,x2,y2 for bbox')
+        parser.add_argument('--slide_window',default=False,action='store_true',help='use slide window technolegy or not')
         parser.add_argument('--video_name',required=True,help='input video name')
 
         args = parser.parse_args()

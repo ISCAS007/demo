@@ -8,6 +8,7 @@ python yolo_video.py --input=/home/yzbx/Videos/sherbrooke_video.avi
 ```
 
 ### https://github.com/ISCAS007/yolov3
+current the window slide version cannot detect bigger object
 ```
 conda activate cuda10.0
 python main.py --video_name ~/Videos/sherbrooke_video.avi --bbox 200 200 600 400 --label car
